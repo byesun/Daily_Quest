@@ -13,7 +13,7 @@ const toggleMenu = () => {
     <div class="header-container">
       <div class="logo">
         <router-link to="/">
-          <h1>Daily Quest</h1>
+          <h1><img src="@/assets/images/logo.png" class="logo-image" alt="로고 이미지" /></h1>
         </router-link>
       </div>
 
@@ -72,6 +72,12 @@ const toggleMenu = () => {
   text-decoration: none;
 }
 
+.logo-image {
+  margin-left: 2rem;
+  width: 6rem;
+  height: 6rem;
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -79,7 +85,7 @@ const toggleMenu = () => {
   border: none;
   background: none;
   padding: 0.5rem;
-  margin-left: 60%;
+  margin-left: 50%;
 }
 
 .bar {
@@ -95,12 +101,12 @@ const toggleMenu = () => {
   flex-direction: column;
   list-style: none;
   padding: 1rem;
-  margin: 0;
+  margin: 1rem 0 0 0;
   background-color: var(--card-color);
   position: absolute;
   top: 100%;
   right: 0;
-  width: 200px;
+  width: 12.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 10;
 }
@@ -110,7 +116,7 @@ const toggleMenu = () => {
 }
 
 .nav-list li {
-  padding: 0.5rem 1rem;
+  padding: 1.5rem 1rem;
 }
 
 .nav-list a {
@@ -137,7 +143,7 @@ const toggleMenu = () => {
 
   .nav-list li {
     margin-left: 1.5rem;
-    padding: 0;
+    padding: 1rem;
   }
 
   .hamburger {
