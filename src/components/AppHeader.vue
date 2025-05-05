@@ -127,7 +127,7 @@ const toggleMenu = () => {
 }
 
 .nav-list a:hover,
-.nav-list a.router-link-active {
+.nav-list {
   color: var(--primary-color);
 }
 
