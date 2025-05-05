@@ -1,28 +1,38 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+
+const featrues = ref([
+  {
+    icon: '🏆',
+    title: '경험치와 레벨',
+    description: '퀘스트를 완료하고 경험치를 얻어 레벨을 올리세요.',
+  },
+  {
+    icon: '🎯',
+    title: '일일 및 주간 퀘스트',
+    description: '정기적인 퀘스트로 꾸준한 습관을 형성하세요.',
+  },
+  {
+    icon: '🥇',
+    title: '업적과 배지',
+    description: '특별한 목표를 달성하고 배지를 수집하세요.',
+  },
+  {
+    icon: '📊',
+    title: '통계와 분석',
+    description: '자신의 생산성을 추적하고 개선하세요.',
+  },
+])
+</script>
 
 <template>
   <section class="features">
     <h2>게임처럼 즐기는 할 일 관리</h2>
     <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🏆</div>
-        <h3>경험치와 레벨</h3>
-        <p>퀘스트를 완료하고 경험치를 얻어 레벨을 올리세요.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3>일일 및 주간 퀘스트</h3>
-        <p>정기적인 퀘스트로 꾸준한 습관을 형성하세요.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🥇</div>
-        <h3>업적과 배지</h3>
-        <p>특별한 목표를 달성하고 배지를 수집하세요.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>통계와 분석</h3>
-        <p>자신의 생산성을 추적하고 개선하세요.</p>
+      <div class="feature-card" v-for="(feature, index) in featrues" :key="index">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
       </div>
     </div>
   </section>
