@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+defineProps({
   id: {
     type: String,
     required: true,
@@ -33,7 +33,6 @@ const props = defineProps({
     default: '',
   },
 })
-
 defineEmits(['update:modelValue'])
 </script>
 
