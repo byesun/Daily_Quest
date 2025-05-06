@@ -7,6 +7,11 @@ import LoginForm from '@/modules/user/login/components/LoginForm.vue'
     <div class="login-container">
       <div class="login-header">
         <h1>로그인</h1>
+        <img
+          src="../../../../assets/images/login-character.png"
+          alt="캐릭터 이미지"
+          class="character"
+        />
         <p>Daily Quest에 오신 것을 환영합니다!</p>
       </div>
       <login-form />
@@ -44,5 +49,10 @@ import LoginForm from '@/modules/user/login/components/LoginForm.vue'
 
 .login-header p {
   color: var(--text-secondary);
+}
+
+.character {
+  width: 25%;
+  height: 20%;
 }
 </style>

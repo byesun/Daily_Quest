@@ -4,7 +4,7 @@
       id="id"
       label="아이디"
       v-model="form.id"
-      type="id"
+      type="text"
       placeholder="아이디을 입력하세요"
       :error="errors.id"
       required
@@ -26,9 +26,9 @@
         <span>로그인 상태 유지</span>
       </label>
       <div class="user-define">
-        <a href="#" class="forgot-id">아이디 찾기</a>
+        <router-link to="/find-id" class="forgot-id">아이디 찾기</router-link>
         <a> \ </a>
-        <a href="#" class="forgot-password">비밀번호 찾기</a>
+        <router-link to="/find-password" class="forgot-password">비밀번호 찾기</router-link>
       </div>
     </div>
 
