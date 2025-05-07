@@ -9,7 +9,9 @@ const errorMessage = ref('')
 const showModal = ref(false)
 
 const form = reactive({
+  id: '',
   name: '',
+  phone: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -17,7 +19,9 @@ const form = reactive({
 })
 
 const errors = reactive({
+  id: '',
   name: '',
+  phone: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -63,6 +67,16 @@ const handleModalClose = () => {
       type="email"
       placeholder="이메일을 입력하세요"
       :error="errors.email"
+      required
+    />
+
+    <base-input
+      id="phone"
+      label="휴대폰 번호"
+      v-model="form.phone"
+      type="number"
+      placeholder="휴대폰 번호를 -를 제외하고 입력하세요."
+      :error="errors.phone"
       required
     />
 
