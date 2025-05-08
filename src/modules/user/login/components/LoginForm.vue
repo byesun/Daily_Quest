@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import BaseInput from '@/components/BaseSetting/BaseInput.vue'
 import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import { useUserLoginStore } from '@/modules/user/login/login-store.js'
+import { useValidation } from '@/modules/user/use-validation.js'
 
 const isLoading = ref(false)
 const errorMessage = ref('')
@@ -22,7 +23,7 @@ const errors = reactive({
 const loginStore = useUserLoginStore()
 const router = useRouter()
 
-const { validateId, validatePassword, validateLogin } = ueValidation(form, errors)
+const { validateId, validatePassword, validateLogin } = useValidation(form, errors)
 
 watch(() => form.id, validateId)
 watch(() => form.password, validatePassword)
