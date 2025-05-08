@@ -1,32 +1,15 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import BaseInput from '@/components/BaseSetting/BaseInput.vue'
-import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import PersonalInformation from '@/modules/user/register/components/PersonalInformation.vue'
+import { useUserRegisterStore } from '@/modules/user/register/user-store.js'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const registerStore = useUserRegisterStore()
+const router = useRouter()
 
 const isLoading = ref(false)
 const errorMessage = ref('')
 const showModal = ref(false)
-
-const form = reactive({
-  id: '',
-  name: '',
-  phone: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  agreeTerms: false,
-})
-
-const errors = reactive({
-  id: '',
-  name: '',
-  phone: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  agreeTerms: '',
-})
 
 const openModal = () => {
   showModal.value = true
@@ -36,7 +19,35 @@ const handleModalClose = () => {
   form.agreeTerms = true
   showModal.value = false
 }
-</script>
+
+const { form, errors } = registerStore
+
+// const resetErrors = () => {
+//   Object.keys(errors).forEach(key => {
+//     errors[key] = '';
+//   })
+// }
+// const validateForm = () => {
+//
+//   resetErrors();
+//
+//   // 유효성 검사
+// }
+
+const handleSubmit = async () => {
+  isLoading.value = true
+  errrMessage.value = ''
+
+  try{
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    aert('회원가입 성'회원가입 성공!'oter.push('/login')
+  } cath (err) {
+    errorMessage.value = '회원가입에 실패'회원가입에 실패'le.error('register error: ', err)
+  } finaly {
+    isLoading.value = false
+  }
+}
+</scipt>
 
 <template>
   <form @submit.prevent="handleSubmit" class="register-form">
@@ -60,25 +71,71 @@ const handleModalClose = () => {
       required
     />
 
-    <base-input
-      id="email"
-      label="이메일"
-      v-model="form.email"
-      type="email"
-      placeholder="이메일을 입력하세요"
-      :error="errors.email"
-      required
-    />
+    <div class="form-group">
+      <label for="email-id" class="form-label">이메일</label>
+      <div class="email-input-group">
+        <input
+          id="email-id"
+          v-model="form.email.id"
+          type="text"
+          placeholder="아이디"
+          class="form-input email-id"
+          required
+        />
+        <span class="email-separator">@</span>
+        <select
+          v-model="form.selectedDomain"
+          class="form-input email-domain-select"
+          v-if="form.selectedDomain !== 'custom'"
+        >
+          <option v-for="domain in form.emailDomains" :key="domain.value" :value="domain.value">
+            {{ domain.label }}
+          </option>
+        </select>
+        <input
+          v-if="form.selectedDomain === 'custom'"
+          v-model="form.customDomain"
+          type="text"
+          placeholder="직접 입력"
+          class="form-input email-domain-input"
+          required
+        />
+      </div>
+      <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
+    </div>
 
-    <base-input
-      id="phone"
-      label="휴대폰 번호"
-      v-model="form.phone"
-      type="number"
-      placeholder="휴대폰 번호를 -를 제외하고 입력하세요."
-      :error="errors.phone"
-      required
-    />
+    <div class="form-group">
+      <label for="phone-first" class="form-label">휴대폰 번호</label>
+      <div class="phone-input-group">
+        <select id="phone-first" v-model="form.phone.first" class="form-input phone-part" required>
+          <option value="010">010</option>
+          <option value="011">011</option>
+          <option value="016">016</option>
+          <option value="017">017</option>
+          <option value="018">018</option>
+          <option value="019">019</option>
+        </select>
+        <span class="phone-separator">-</span>
+        <input
+          v-model="form.phone.middle"
+          type="text"
+          maxlength="4"
+          placeholder="0000"
+          class="form-input phone-part"
+          required
+        />
+        <span class="phone-separator">-</span>
+        <input
+          v-model="form.phone.last"
+          type="text"
+          maxlength="4"
+          placeholder="0000"
+          class="form-input phone-part"
+          required
+        />
+      </div>
+      <p v-if="errors.phone" class="error-message">{{ errors.phone }}</p>
+    </div>
 
     <base-input
       id="password"
@@ -148,13 +205,6 @@ const handleModalClose = () => {
   margin-top: 0.25rem;
 }
 
-.error-message {
-  color: var(--error-color);
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0;
-}
-
 .form-error {
   color: var(--error-color);
   margin-top: 1rem;
@@ -174,5 +224,69 @@ const handleModalClose = () => {
 
 .auth-links a:hover {
   text-decoration: underline;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--search-input-background-color);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.email-input-group,
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.email-id {
+  flex: 1;
+}
+
+.email-separator,
+.phone-separator {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.email-domain-select {
+  flex: 1;
+}
+
+.email-domain-input {
+  flex: 1;
+}
+
+.phone-part {
+  flex: 1;
+  text-align: center;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
 }
 </style>
