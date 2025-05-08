@@ -1,10 +1,19 @@
 <script setup>
 import { ref } from 'vue'
+import { useUserLoginStore } from '@/modules/user/login/login-store.js'
+import { storeToRefs } from 'pinia'
+import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 
 const isMenuOpen = ref(false)
+const loginStore = useUserLoginStore()
+const { isLoggedIn } = storeToRefs(loginStore)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
+}
+
+const logout = () => {
+  loginStore.logout()
 }
 </script>
 
@@ -25,20 +34,20 @@ const toggleMenu = () => {
 
       <nav class="nav" :class="{ open: isMenuOpen }">
         <ul class="nav-list">
-          <li>
-            <router-link to="/">홈</router-link>
-          </li>
-          <li>
+          <li v-if="isLoggedIn">
             <router-link to="/quests">퀘스트 목록</router-link>
           </li>
-          <li>
+          <li v-if="isLoggedIn">
             <router-link to="/profile">My Page</router-link>
           </li>
-          <li>
+          <li v-if="!isLoggedIn">
             <router-link to="/login">로그인</router-link>
           </li>
-          <li>
+          <li v-if="!isLoggedIn">
             <router-link to="/register">회원가입</router-link>
+          </li>
+          <li v-if="isLoggedIn">
+            <base-button @click="logout" class="logout-btn">로그아웃</base-button>
           </li>
         </ul>
       </nav>
@@ -55,10 +64,11 @@ const toggleMenu = () => {
 }
 
 .header-container {
-  display: flex;
   justify-content: space-between;
+  display: flex;
   align-items: center;
   position: relative;
+  padding: 0 2rem;
 }
 
 /* 로고 */
@@ -85,7 +95,7 @@ const toggleMenu = () => {
   border: none;
   background: none;
   padding: 0.5rem;
-  margin-left: 50%;
+  margin-left: auto;
 }
 
 .bar {
@@ -117,6 +127,8 @@ const toggleMenu = () => {
 
 .nav-list li {
   padding: 1.5rem 1rem;
+  min-width: 100px; /* 항목 크기 일정하게 유지 */
+  text-align: center;
 }
 
 .nav-list a {
@@ -131,9 +143,16 @@ const toggleMenu = () => {
   color: var(--primary-color);
 }
 
+.logout-btn {
+  width: 6rem;
+  height: 3rem;
+  font-size: 0.8rem;
+}
+
 @media (min-width: 769px) {
   .nav-list {
     display: flex !important;
+    align-items: center;
     flex-direction: row;
     position: static;
     background: none;
