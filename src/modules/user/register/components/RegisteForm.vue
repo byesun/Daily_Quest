@@ -3,8 +3,16 @@ import PersonalInformation from '@/modules/user/register/components/PersonalInfo
 import BaseInput from '@/components/BaseSetting/BaseInput.vue'
 import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import { useUserRegisterStore } from '@/modules/user/register/user-store.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  isValidDomain,
+  isValidEmailId,
+  isValidLoginId,
+  isValidName,
+  isValidPassword,
+  isValidPhone,
+} from '@/modules/user/validation.js'
 
 const registerStore = useUserRegisterStore()
 const router = useRouter()
@@ -24,17 +32,62 @@ const handleModalClose = () => {
 
 const { form, errors } = registerStore
 
-// const resetErrors = () => {
-//   Object.keys(errors).forEach(key => {
-//     errors[key] = '';
-//   })
-// }
-// const validateForm = () => {
-//
-//   resetErrors();
-//
-//   // 유효성 검사
-// }
+const resetErrors = () => {
+  Object.keys(errors).forEach((key) => {
+    errors[key] = ''
+  })
+}
+
+watch(
+  () => form.id,
+  (val) => {
+    errors.id = val && !isValidLoginId(val) ? '4~12자의 영문 또는 숫자를 입력하세요.' : ''
+  },
+)
+
+watch(
+  () => form.password,
+  (val) => {
+    errors.password =
+      val && !isValidPassword(val) ? '비밀번호는 문자와 숫자를 포함한 6~20자여야 합니다.' : ''
+  },
+)
+
+watch(
+  () => [form.confirmPassword],
+  () => {
+    const isPass = form.password === form.confirmPassword
+    errors.confirmPassword = !isPass ? '비밀번호가 일치하지 않습니다.' : ''
+  },
+)
+
+watch(
+  () => form.name,
+  (val) => {
+    errors.name = val && !isValidName(val) ? '이름은 한글 2~8자만 가능합니다.' : ''
+  },
+)
+
+watch(
+  () => [form.email.id, form.selectedDomain, form.customDomain],
+  () => {
+    const domain = form.selectedDomain === 'custom' ? form.customDomain : form.selectedDomain
+    // const fullEmail = `${form.email.id}@${domain}`;
+    if (!isValidEmailId(form.email.id) || !isValidDomain(domain)) {
+      errors.email = '유효한 이메일을 입력하세요.'
+    } else {
+      errors.email = ''
+    }
+  },
+)
+
+watch(
+  () => [form.phone.first, form.phone.middle, form.phone.last],
+  () => {
+    const isValid = isValidPhone(form.phone.first, form.phone.middle, form.phone.last)
+    errors.phone = !isValid ? '유효한 휴대폰 번호를 입력하세요.' : ''
+  },
+)
 
 const handleSubmit = async () => {
   isLoading.value = true
