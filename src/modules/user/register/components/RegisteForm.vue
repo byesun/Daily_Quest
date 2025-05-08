@@ -1,5 +1,7 @@
 <script setup>
 import PersonalInformation from '@/modules/user/register/components/PersonalInformation.vue'
+import BaseInput from '@/components/BaseSetting/BaseInput.vue'
+import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import { useUserRegisterStore } from '@/modules/user/register/user-store.js'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -36,18 +38,20 @@ const { form, errors } = registerStore
 
 const handleSubmit = async () => {
   isLoading.value = true
-  errrMessage.value = ''
+  errorMessage.value = ''
 
-  try{
+  try {
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    aert('회원가입 성'회원가입 성공!'oter.push('/login')
-  } cath (err) {
-    errorMessage.value = '회원가입에 실패'회원가입에 실패'le.error('register error: ', err)
-  } finaly {
+    alert('회원가입 성공!')
+    router.push('/login')
+  } catch (err) {
+    errorMessage.value = '회원가입에 실패'
+    console.error('register error: ', err)
+  } finally {
     isLoading.value = false
   }
 }
-</scipt>
+</script>
 
 <template>
   <form @submit.prevent="handleSubmit" class="register-form">
