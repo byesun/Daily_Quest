@@ -89,9 +89,52 @@ watch(
   },
 )
 
+const validateForm = () => {
+  resetErrors()
+
+  if (!form.id || !isValidLoginId(form.id)) {
+    errors.id = '4~12자의 영문 또는 숫자를 입력하세요.'
+  }
+
+  if (!form.password || !isValidPassword(form.password)) {
+    errors.password = '비밀번호는 문자와 숫자를 포함한 6~20자여야 합니다.'
+  }
+
+  if (form.password !== form.confirmPassword) {
+    errors.confirmPassword = '비밀번호가 일치 하지 않습니다.'
+  }
+
+  if (!form.name || !isValidName(form.name)) {
+    errors.name = '이름은 한글 2~8자만 가능합니다.'
+  }
+
+  const domain = form.selectedDomain === 'custom' ? form.customDomain : form.selectedDomain
+  if (!isValidEmailId(form.email.id) || !isValidDomain(domain)) {
+    errors.email = '유효한 이메일을 입력하세요.'
+  }
+
+  if (!isValidPhone(form.phone.first, form.phone.middle, form.phone.last)) {
+    errors.phone = '유효한 휴대폰 번호를 입력하세요.'
+  }
+
+  // 필요한 경우 추가
+  if (!form.agreeTerms) {
+    errors.agreeTerms = '약관에 동의해야 합니다.'
+  }
+
+  return Object.values(errors).every((e) => !e)
+}
+
 const handleSubmit = async () => {
   isLoading.value = true
   errorMessage.value = ''
+
+  const isValid = validateForm()
+  if (!isValid) {
+    alert('입력을 확인해주세요!')
+    isLoading.value = false
+    return
+  }
 
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000))
