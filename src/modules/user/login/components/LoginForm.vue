@@ -1,3 +1,48 @@
+<script setup>
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import BaseInput from '@/components/BaseSetting/BaseInput.vue'
+import BaseButton from '@/components/BaseSetting/BaseButton.vue'
+import { useUserLoginStore } from '@/modules/user/login/login-store.js'
+
+const isLoading = ref(false)
+const errorMessage = ref('')
+
+const form = reactive({
+  id: '',
+  password: '',
+  rememberMe: false,
+})
+
+const errors = reactive({
+  id: '',
+  password: '',
+})
+
+const loginStore = useUserLoginStore()
+const router = useRouter()
+
+const handleSubmit = async () => {
+  isLoading.value = true
+  errorMessage.value = ''
+
+  await new Promise((resolve) => setTimeout(resolve, 500))
+
+  const success = loginStore.login({
+    id: form.id,
+    password: form.password,
+  })
+
+  if (success) {
+    router.push('/')
+  } else {
+    errorMessage.value = loginStore.errorMessage
+  }
+
+  isLoading.value = false
+}
+</script>
+
 <template>
   <form @submit.prevent="handleSubmit" class="auth-form">
     <base-input
@@ -46,26 +91,6 @@
     </div>
   </form>
 </template>
-
-<script setup>
-import { reactive, ref } from 'vue'
-import BaseInput from '@/components/BaseSetting/BaseInput.vue'
-import BaseButton from '@/components/BaseSetting/BaseButton.vue'
-
-const isLoading = ref(false)
-const errorMessage = ref('')
-
-const form = reactive({
-  id: '',
-  password: '',
-  rememberMe: false,
-})
-
-const errors = reactive({
-  id: '',
-  password: '',
-})
-</script>
 
 <style scoped>
 .auth-form {

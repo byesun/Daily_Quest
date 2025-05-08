@@ -1,5 +1,10 @@
 <script setup>
 import BaseButton from '@/components/BaseSetting/BaseButton.vue'
+import { useUserLoginStore } from '@/modules/user/login/login-store.js'
+import { storeToRefs } from 'pinia'
+
+const loginStore = useUserLoginStore()
+const { isLoggedIn } = storeToRefs(loginStore)
 </script>
 
 <template>
@@ -11,10 +16,10 @@ import BaseButton from '@/components/BaseSetting/BaseButton.vue'
         획득하세요!
       </p>
       <div class="hero-buttons">
-        <router-link to="/register">
+        <router-link to="/register" v-if="!isLoggedIn">
           <base-button variant="primary">시작하기</base-button>
         </router-link>
-        <router-link to="/quests">
+        <router-link to="/quests" v-if="isLoggedIn">
           <base-button variant="primary">퀘스트 보드로 이동</base-button>
         </router-link>
         <router-link to="/about">
