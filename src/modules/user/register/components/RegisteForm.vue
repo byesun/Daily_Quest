@@ -5,14 +5,7 @@ import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import { useUserRegisterStore } from '@/modules/user/register/user-store.js'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  isValidDomain,
-  isValidEmailId,
-  isValidLoginId,
-  isValidName,
-  isValidPassword,
-  isValidPhone,
-} from '@/modules/user/validation.js'
+import { useValidation } from '@/modules/user/use-validation.js'
 
 const registerStore = useUserRegisterStore()
 const router = useRouter()
@@ -31,105 +24,28 @@ const handleModalClose = () => {
 }
 
 const { form, errors } = registerStore
+const {
+  validateId,
+  validatePassword,
+  validateConfirmPassword,
+  validateName,
+  validateEmail,
+  validatePhone,
+  validateAll,
+} = useValidation(form, errors)
 
-const resetErrors = () => {
-  Object.keys(errors).forEach((key) => {
-    errors[key] = ''
-  })
-}
-
-watch(
-  () => form.id,
-  (val) => {
-    errors.id = val && !isValidLoginId(val) ? '4~12자의 영문 또는 숫자를 입력하세요.' : ''
-  },
-)
-
-watch(
-  () => form.password,
-  (val) => {
-    errors.password =
-      val && !isValidPassword(val) ? '비밀번호는 문자와 숫자를 포함한 6~20자여야 합니다.' : ''
-  },
-)
-
-watch(
-  () => [form.confirmPassword],
-  () => {
-    const isPass = form.password === form.confirmPassword
-    errors.confirmPassword = !isPass ? '비밀번호가 일치하지 않습니다.' : ''
-  },
-)
-
-watch(
-  () => form.name,
-  (val) => {
-    errors.name = val && !isValidName(val) ? '이름은 한글 2~8자만 가능합니다.' : ''
-  },
-)
-
-watch(
-  () => [form.email.id, form.selectedDomain, form.customDomain],
-  () => {
-    const domain = form.selectedDomain === 'custom' ? form.customDomain : form.selectedDomain
-    // const fullEmail = `${form.email.id}@${domain}`;
-    if (!isValidEmailId(form.email.id) || !isValidDomain(domain)) {
-      errors.email = '유효한 이메일을 입력하세요.'
-    } else {
-      errors.email = ''
-    }
-  },
-)
-
-watch(
-  () => [form.phone.first, form.phone.middle, form.phone.last],
-  () => {
-    const isValid = isValidPhone(form.phone.first, form.phone.middle, form.phone.last)
-    errors.phone = !isValid ? '유효한 휴대폰 번호를 입력하세요.' : ''
-  },
-)
-
-const validateForm = () => {
-  resetErrors()
-
-  if (!form.id || !isValidLoginId(form.id)) {
-    errors.id = '4~12자의 영문 또는 숫자를 입력하세요.'
-  }
-
-  if (!form.password || !isValidPassword(form.password)) {
-    errors.password = '비밀번호는 문자와 숫자를 포함한 6~20자여야 합니다.'
-  }
-
-  if (form.password !== form.confirmPassword) {
-    errors.confirmPassword = '비밀번호가 일치 하지 않습니다.'
-  }
-
-  if (!form.name || !isValidName(form.name)) {
-    errors.name = '이름은 한글 2~8자만 가능합니다.'
-  }
-
-  const domain = form.selectedDomain === 'custom' ? form.customDomain : form.selectedDomain
-  if (!isValidEmailId(form.email.id) || !isValidDomain(domain)) {
-    errors.email = '유효한 이메일을 입력하세요.'
-  }
-
-  if (!isValidPhone(form.phone.first, form.phone.middle, form.phone.last)) {
-    errors.phone = '유효한 휴대폰 번호를 입력하세요.'
-  }
-
-  // 필요한 경우 추가
-  if (!form.agreeTerms) {
-    errors.agreeTerms = '약관에 동의해야 합니다.'
-  }
-
-  return Object.values(errors).every((e) => !e)
-}
+watch(() => form.id, validateId)
+watch(() => form.password, validatePassword)
+watch(() => form.confirmPassword, validateConfirmPassword)
+watch(() => form.name, validateName)
+watch(() => [form.email.id, form.selectedDomain, form.customDomain], validateEmail)
+watch(() => [form.phone.first, form.phone.middle, form.phone.last], validatePhone)
 
 const handleSubmit = async () => {
   isLoading.value = true
   errorMessage.value = ''
 
-  const isValid = validateForm()
+  const isValid = validateAll()
   if (!isValid) {
     alert('입력을 확인해주세요!')
     isLoading.value = false

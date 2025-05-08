@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import BaseInput from '@/components/BaseSetting/BaseInput.vue'
 import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import { useUserLoginStore } from '@/modules/user/login/login-store.js'
-import { isValidLoginId, isValidPassword } from '@/modules/user/validation.js'
 
 const isLoading = ref(false)
 const errorMessage = ref('')
@@ -23,38 +22,16 @@ const errors = reactive({
 const loginStore = useUserLoginStore()
 const router = useRouter()
 
-watch(
-  () => form.id,
-  (val) => {
-    errors.id = val && !isValidLoginId(val) ? '4~12자의 영문 또는 숫자를 입력하세요.' : ''
-  },
-)
+const { validateId, validatePassword, validateLogin } = ueValidation(form, errors)
 
-watch(
-  () => form.password,
-  (val) => {
-    errors.password =
-      val && !isValidPassword(val) ? '비밀번호는 문자와 숫자를 포함한 6~20자여야 합니다.' : ''
-  },
-)
-
-const validateForm = () => {
-  if (!form.id || !isValidLoginId(form.id)) {
-    errors.id = '4~12자의 영문 또는 숫자를 입력하세요.'
-  }
-
-  if (!form.password || !isValidPassword(form.password)) {
-    errors.password = '비밀번호는 문자와 숫자를 포함한 6~20자여야 합니다.'
-  }
-
-  return Object.values(errors).every((e) => !e)
-}
+watch(() => form.id, validateId)
+watch(() => form.password, validatePassword)
 
 const handleSubmit = async () => {
   isLoading.value = true
   errorMessage.value = ''
 
-  const isValidation = validateForm()
+  const isValidation = validateLogin()
   if (!isValidation) {
     alert('입력을 확인해주세요!')
     isLoading.value = false
