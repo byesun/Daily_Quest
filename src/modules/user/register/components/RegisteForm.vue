@@ -3,8 +3,9 @@ import PersonalInformation from '@/modules/user/register/components/PersonalInfo
 import BaseInput from '@/components/BaseSetting/BaseInput.vue'
 import BaseButton from '@/components/BaseSetting/BaseButton.vue'
 import { useUserRegisterStore } from '@/modules/user/register/user-store.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useValidation } from '@/modules/user/use-validation.js'
 
 const registerStore = useUserRegisterStore()
 const router = useRouter()
@@ -23,22 +24,33 @@ const handleModalClose = () => {
 }
 
 const { form, errors } = registerStore
+const {
+  validateId,
+  validatePassword,
+  validateConfirmPassword,
+  validateName,
+  validateEmail,
+  validatePhone,
+  validateAll,
+} = useValidation(form, errors)
 
-// const resetErrors = () => {
-//   Object.keys(errors).forEach(key => {
-//     errors[key] = '';
-//   })
-// }
-// const validateForm = () => {
-//
-//   resetErrors();
-//
-//   // 유효성 검사
-// }
+watch(() => form.id, validateId)
+watch(() => form.password, validatePassword)
+watch(() => form.confirmPassword, validateConfirmPassword)
+watch(() => form.name, validateName)
+watch(() => [form.email.id, form.selectedDomain, form.customDomain], validateEmail)
+watch(() => [form.phone.first, form.phone.middle, form.phone.last], validatePhone)
 
 const handleSubmit = async () => {
   isLoading.value = true
   errorMessage.value = ''
+
+  const isValid = validateAll()
+  if (!isValid) {
+    alert('입력을 확인해주세요!')
+    isLoading.value = false
+    return
+  }
 
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000))
